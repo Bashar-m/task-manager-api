@@ -1,0 +1,6 @@
+## Development
+
+### Local development (recommended)
+```bash
+docker-compose up mongo redis
+npm start
