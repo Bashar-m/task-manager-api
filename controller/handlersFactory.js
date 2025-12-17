@@ -1,35 +1,36 @@
-const apiFeatures = require("../utils/apiFeatures");
+const ApiError = require("../utils/apiError");
+const Features = require("../utils/apiFeatures");
 const apiError = require("../utils/apiError");
 const asyncHandler = require("express-async-handler");
-const ApiError = require("../utils/apiError");
 
 exports.createOne = (Model) =>
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const document = await Model.create(req.body);
     res.status(201).json({ data: document });
   });
 
-exports.getAll = (Model, popOpretons) =>
-  asyncHandler(async (req, res, next0) => {
-    const document = await apiFeatures(Model.find(), req.query)
+exports.getAll = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    const totalDocuments = await Model.countDocuments();
+
+    const features = new Features(Model.find(), req.query)
       .filter()
       .sort()
+      .search()
       .limitFields()
-      .paginate();
+      .paginate(totalDocuments);
 
-    if (!document) {
-      return next(new apiError("No documents found", 404));
+    const { results: result, pagination } = await features.execute();
+    if (!result || result.length === 0) {
+      return next(new apiError("No category found", 404));
     }
-    if (popOpretons) {
-      document.populate(popOpretons);
-    }
+
     res.status(200).json({
-      results: document.length,
-      pagination: apiFeatures.paginate(req, document),
-      data: document,
+      results: result.length,
+      pagination,
+      data: result,
     });
   });
-
 exports.getOne = (Model) =>
   asyncHandler(async (req, res, next) => {
     const document = await Model.findById(req.params.id);
