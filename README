@@ -1,6 +1,18 @@
-## Development
+# Task Manager API
 
-### Local development (recommended)
-```bash
-docker-compose up mongo redis
-npm start
+A scalable Node.js backend for task manager Built with a focus on modularity and clean architecture.
+
+## Tech Stack
+- **Runtime**: Node.js (Express.js)
+- **Database**: MongoDB (Mongoose ODM)
+- **Caching**: Redis
+- **Security**: JWT, Argon2/Bcrypt, Express-rate-limit
+- **Containerization**: Docker & Docker Compose
+
+---
+
+## Development Setup
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Node.js](https://nodejs.org/) (v18+ recommended)
