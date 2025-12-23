@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
-    const document = await Model.create(req.body);
+    const document = await Model.create({...req.body , owner: req.user._id});
     res.status(201).json({ data: document });
   });
 

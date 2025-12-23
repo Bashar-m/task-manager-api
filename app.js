@@ -30,10 +30,10 @@ mountRoutes(app);
 //global error handling middleware
 app.use(globalErrorHandler);
 
-setInterval(() => {
-  overdueQueue.add({});
-  logger.info("🕒 Cron: Added overdue check job");
-}, 60 * 1000); // كل دقيقة
+// setInterval(() => {
+//   overdueQueue.add({});
+//   logger.info("🕒 Cron: Added overdue check job");
+// }, 60 * 1000); // كل دقيقة
 
 
 //start the server

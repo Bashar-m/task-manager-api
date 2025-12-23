@@ -6,6 +6,7 @@ const tasksSchema = new mongoose.Schema(
     description: { type: String, required: true },
     category: {
       type: mongoose.Schema.ObjectId,
+      ref: "Category",
     },
     priority: {
       type: String,
@@ -17,7 +18,11 @@ const tasksSchema = new mongoose.Schema(
       enum: ["pending", "in-progress", "completed", "overdue"],
       default: "pending",
     },
-    dueDate: { type: Date, required: true , default: Date.now()},
+    dueDate: { type: Date, required: true, default: Date.now() },
+    owner: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
     slug: {
       type: String,
       lowercase: true,

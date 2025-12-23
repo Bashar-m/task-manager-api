@@ -8,12 +8,12 @@ module.exports = async () => {
     const result = await Task.updateMany(
       {
         status: "pending",
-        dueDate: { $lt: now }, // المهام التي تاريخ استحقاقها أصغر من الوقت الحالي
+        dueDate: { $lt: now }, 
       },
-      { status: "overdue" } // تصحيح الكلمة هنا
+      { status: "overdue" } 
     );
 
-    // استخدام result.modifiedCount صحيح لـ Mongoose
+   
     logger.info(`⏱ Updated ${result.modifiedCount} overdue tasks`);
   } catch (error) {
     logger.error("❌ Error updating overdue tasks:", error);
