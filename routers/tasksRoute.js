@@ -4,9 +4,9 @@ const router = require("express").Router();
 const {
   createTask,
   getAllTasks,
+  deleteOneTask,
   getOneTask,
   updateOneTask,
-  deleteOneTask,
 } = require("../controller/tasksController");
 
 router.route("/").post(protect, createTask).get(protect, getAllTasks);
@@ -15,4 +15,5 @@ router
   .get(protect, getOneTask)
   .patch(protect, updateOneTask)
   .delete(protect, deleteOneTask);
+
 module.exports = router;

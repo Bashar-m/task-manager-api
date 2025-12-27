@@ -1,5 +1,7 @@
 const router = require("express").Router();
 
+
+const protect = require("../middlewares/protect");
 const {
   createCategory,
   getAllCategory,
@@ -8,11 +10,10 @@ const {
   deleteOneCategory,
 } = require("../controller/categoryController");
 
-router.route("/").post(createCategory).get(getAllCategory);
+router.route("/").post(protect, createCategory).get(protect, getAllCategory);
 router
   .route("/:id")
-  .get(getOneCategory)
-  .patch(updateOneCategory)
-  .delete(deleteOneCategory);
-
+  .get(protect, getOneCategory)
+  .patch(protect, updateOneCategory)
+  .delete(protect, deleteOneCategory);
 module.exports = router;

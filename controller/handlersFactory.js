@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
-    const document = await Model.create({...req.body , owner: req.user._id});
+    const document = await Model.create({ ...req.body, owner: req.user._id });
     res.status(201).json({ data: document });
   });
 
@@ -13,7 +13,10 @@ exports.getAll = (Model) =>
   asyncHandler(async (req, res, next) => {
     const totalDocuments = await Model.countDocuments();
 
-    const features = new Features(Model.find(), req.query)
+    const features = new Features(
+      Model.find(),
+      req.query
+    )
       .filter()
       .sort()
       .search()
@@ -22,7 +25,7 @@ exports.getAll = (Model) =>
 
     const { results: result, pagination } = await features.execute();
     if (!result || result.length === 0) {
-      return next(new apiError("No category found", 404));
+      return next(new apiError("No document found", 404));
     }
 
     res.status(200).json({
@@ -33,7 +36,10 @@ exports.getAll = (Model) =>
   });
 exports.getOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findById(req.params.id);
+    const document = await Model.findById({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
     if (!document) {
       return next(
         new ApiError(`no document for this id ${req.params.id}`, 404)
@@ -44,10 +50,14 @@ exports.getOne = (Model) =>
 
 exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const document = await Model.findByIdAndUpdate(
+      { _id: req.params.id, owner: req.user._id },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!document) {
       return next(
         new ApiError(`no document for this id ${req.params.id}`, 404)
@@ -58,7 +68,10 @@ exports.updateOne = (Model) =>
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findByIdAndDelete(req.params.id);
+    const document = await Model.findByIdAndDelete({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
     if (!document) {
       return next(
         new ApiError(`no document for this id ${req.params.id}`, 404)

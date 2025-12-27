@@ -1,20 +1,39 @@
 const User = require("../models/userModel");
+const asyncHandler = require("express-async-handler");
+const UserService = require("../services/userService");
+const getPagination = require("../utils/getPagination");
+const { httpStatus } = require("../constants");
 
 
-const {
-  createOne,
-  getAll,
-  getOne,
-  deleteOne,
-  updateOne,
-} = require("../controller/handlersFactory");
+exports.createUser = asyncHandler(async (req, res, next) => {
+  const user = await User.create({ ...req.body });
+  res.status(httpStatus.CREATED).json({ data: user });
+});
 
-exports.createUser = createOne(User);
+exports.getAllUser = asyncHandler(async (req, res, next) => {
+  const { pagination } = getPagination(req.query);
+  const users = await UserService.paginate({}, pagination);
+  res.status(httpStatus.OK).json(users);
+});
 
-exports.getAllUser = getAll(User);
+exports.getOneUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ _id: req.params.id });
+  res.status(httpStatus.OK).json({ data: user });
+});
 
-exports.getOneUser = getOne(User);
+exports.updateOneUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    { _id: req.params.id },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(httpStatus.OK).json({ data: user });
+});
 
-exports.updateOneUser = updateOne(User);
-
-exports.deleteOneUser = deleteOne(User);
+exports.deleteOneUser = asyncHandler(async (req, res, next) => {
+  await User.findByIdAndDelete({ _id: req.params.id });
+  res.status(httpStatus.NO_CONTENT).send();
+});

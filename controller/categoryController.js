@@ -1,20 +1,49 @@
 const Category = require("../models/categoryModel");
+const asyncHandler = require("express-async-handler");
+const CategoryService = require("../services/categoryService");
+const getPagination = require("../utils/getPagination");
+const { httpStatus } = require("../constants");
 
+exports.createCategory = asyncHandler(async (req, res, next) => {
+  const category = await Category.create({ ...req.body, owner: req.user._id });
+  res.status(httpStatus.CREATED).json({ data: category });
+});
 
-const {
-  createOne,
-  getAll,
-  getOne,
-  deleteOne,
-  updateOne,
-} = require("../controller/handlersFactory");
+exports.getAllCategory = asyncHandler(async (req, res) => {
+  const { pagination } = getPagination(req.query);
 
-exports.createCategory = createOne(Category);
+  const categories = await CategoryService.paginate(
+    { owner: req.user._id },
+    pagination
+  );
 
-exports.getAllCategory = getAll(Category);
+  res.status(httpStatus.OK).json(categories);
+});
 
-exports.getOneCategory = getOne(Category);
+exports.getOneCategory = asyncHandler(async (req, res, next) => {
+  const category = await Category.findOne({
+    _id: req.params.id,
+    owner: req.user._id,
+  });
+  res.status(httpStatus.OK).json({ data: category });
+});
 
-exports.updateOneCategory = updateOne(Category);
+exports.updateOneCategory = asyncHandler(async (req, res, next) => {
+  const category = await Category.findByIdAndUpdate(
+    {
+      _id: req.params.id,
+      owner: req.user._id,
+    },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(httpStatus.OK).json({ data: category });
+});
 
-exports.deleteOneCategory = deleteOne(Category);
+exports.deleteOneCategory = asyncHandler(async (req, res, next) => {
+  await Category.findByIdAndDelete({ _id: req.params.id, owner: req.user._id });
+  res.status(httpStatus.NO_CONTENT).send();
+});
