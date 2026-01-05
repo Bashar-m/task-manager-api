@@ -1,4 +1,7 @@
 const httpStatus = require("../constants/httpStatus");
+const ApiError = require("../utils/ApiError");
+
+
 
 const validate = (schema, property = "body") => {
   return (req, res, next) => {
@@ -7,12 +10,17 @@ const validate = (schema, property = "body") => {
       allowUnknown: true,
       stripUnknown: true,
     });
+
+
     if (error) {
-      const errorDetails = error.details.map((detail) => detail.message);
-      return res.status(httpStatus.BAD_REQUEST).json({ errors: errorDetails });
+      const message = error.details.map((detail) => detail.message).join(", ");
+      return next(new ApiError(message, httpStatus.BAD_REQUEST));
     }
+
+
     req[property] = value;
     next();
+
   };
 };
 

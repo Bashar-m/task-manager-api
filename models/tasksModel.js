@@ -8,25 +8,35 @@ const tasksSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Category",
     },
+
     priority: {
       type: String,
       enum: ["high priority", "medium priority", "low priority", "no priority"],
       default: "medium priority",
     },
+
     status: {
       type: String,
       enum: ["pending", "in-progress", "completed", "overdue"],
       default: "pending",
     },
+
+    image: {
+      type: String,
+    },
+
     dueDate: { type: Date, required: true, default: Date.now() },
+
     owner: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
+
     slug: {
       type: String,
       lowercase: true,
     },
+    
   },
   { timestamps: true }
 );

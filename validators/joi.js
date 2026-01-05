@@ -22,4 +22,24 @@ joi.pagination = () =>
     sort: joi.string().valid("asc", "desc").default("desc"),
   });
 
+// let num = joi.alternatives().try(
+//   joi.string(),
+//   joi.object({
+//     gte: joi.string(),
+//     lte: joi.string(),
+//   }).unknown(false)
+
+// );
+
 module.exports = joi;
+
+//rating[gte] = 1
+
+// //rating: {
+// gte: 1
+// }
+
+// rating[nin]
+// rating[nin]
+
+//casel

@@ -5,9 +5,7 @@ const morgan = require("morgan");
 const globalErrorHandler = require("./middlewares/errrorMiddlewares");
 const dbConnection = require("./config/db");
 const logger = require("./utils/logger");
-const overdueQueue = require("./queues/overdueQueue");
 const mountRoutes = require("./routers/routersIndex");
-const { set } = require("mongoose");
 const app = express();
 
 app.use(express.json());

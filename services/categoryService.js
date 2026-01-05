@@ -1,6 +1,7 @@
 const Category = require("../models/categoryModel");
 const BaseService = require("./BaseService");
 class CategoryService extends BaseService {
+
   constructor() {
     super(Category);
   }
