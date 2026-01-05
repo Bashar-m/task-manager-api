@@ -1,4 +1,3 @@
-const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/ApiError");
 const { httpStatus } = require("../constants/index");
 const path = require("path");
@@ -6,7 +5,7 @@ const fs = require("fs");
 const Task = require("../models/tasksModel");
 const logger = require("../utils/logger");
 class TaskService {
-  
+
   /* =======================
      GET BY CRITERIA
   ======================= */
