@@ -6,6 +6,7 @@ const globalErrorHandler = require("./middlewares/errrorMiddlewares");
 const dbConnection = require("./config/db");
 const logger = require("./utils/logger");
 const mountRoutes = require("./routers/routersIndex");
+// const responseFormatter = require("./middlewares/responseFormatter");
 const app = express();
 
 app.use(express.json());
@@ -23,6 +24,8 @@ if (process.env.NODE_ENV === "development") {
   console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
+// app.use(responseFormatter);
+
 //mount all routes
 mountRoutes(app);
 //global error handling middleware
@@ -32,7 +35,6 @@ app.use(globalErrorHandler);
 //   overdueQueue.add({});
 //   logger.info("🕒 Cron: Added overdue check job");
 // }, 60 * 1000); // كل دقيقة
-
 
 //start the server
 const PORT = process.env.PORT || 3000;

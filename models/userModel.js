@@ -23,4 +23,12 @@ const userShema = new mongoose.Schema({
   },
 });
 
+userShema.set("toJSON", {
+  transform: function (doc, ret) {
+    delete ret.__v;
+    delete ret.password;
+    return ret;
+  },
+});
+
 module.exports = mongoose.model("User", userShema);

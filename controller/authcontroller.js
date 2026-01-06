@@ -1,6 +1,5 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
 
 const User = require("../models/userModel");
 const ApiError = require("../utils/apiError");

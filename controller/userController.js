@@ -1,9 +1,9 @@
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const UserService = require("../services/userService");
+const userDto = require("../dto/user.dto");
 const getPagination = require("../utils/getPagination");
 const { httpStatus } = require("../constants");
-
 
 exports.createUser = asyncHandler(async (req, res, next) => {
   const user = await User.create({ ...req.body });
@@ -22,18 +22,22 @@ exports.getOneUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateOneUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(
-    { _id: req.params.id },
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const user = await User.findByIdAndUpdate({ _id: req.params.id }, req.body, {
+    new: true,
+    runValidators: true,
+  });
   res.status(httpStatus.OK).json({ data: user });
 });
 
 exports.deleteOneUser = asyncHandler(async (req, res, next) => {
   await User.findByIdAndDelete({ _id: req.params.id });
   res.status(httpStatus.NO_CONTENT).send();
+});
+
+exports.getMyData = asyncHandler(async (req, res, next) => {
+  const user = await UserService.getMe(req.params.id);
+  res.status(httpStatus.OK).json({
+    status: "success",
+    data: userDto(user),
+  });
 });
