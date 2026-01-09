@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 
+const cookieParser = require("cookie-parser");
 const globalErrorHandler = require("./middlewares/errrorMiddlewares");
 const dbConnection = require("./config/db");
 const logger = require("./utils/logger");
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 //configure env variables
+app.use(cookieParser());
 
 const envFile = process.env.NODE_ENV === "docker" ? "docker.env" : "local.env";
 dotenv.config({ path: `config/${envFile}` });
