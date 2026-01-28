@@ -1,10 +1,19 @@
+version: '3.8'
+
 services:
+  # 1. خدمة Redis: تستخدم لإدارة الطوابير (Queues) والكاش
   redis:
     image: redis:latest
     container_name: redis_server
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+  # 2. خدمة MongoDB: قاعدة البيانات الرئيسية
   mongo:
     image: mongo:6
     container_name: mongo_db
@@ -12,28 +21,48 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+  # 3. خدمة الـ API: السيرفر الرئيسي الذي يستقبل الطلبات
   api:
     build: .
     container_name: tasks_api
     command: node app.js
+    environment:
+      - NODE_ENV=docker
     volumes:
       - .:/app
+      - /app/node_modules # لمنع تداخل ملفات node_modules المحلية مع الحاوية
     ports:
       - "3000:3000"
     depends_on:
-      - redis
-      - mongo
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
 
+  # 4. خدمة الـ Worker: معالجة المهام الخلفية (مثل التاسكات المتأخرة)
   worker:
     build: .
     container_name: overdue_worker
     command: node queues/overdueWorker.js
+    environment:
+      - NODE_ENV=docker
     volumes:
       - .:/app
+      - /app/node_modules
     depends_on:
-      - redis
-      - mongo
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
 
+# تعريف المساحات التخزينية لضمان عدم ضياع البيانات عند حذف الحاويات
 volumes:
   mongo_data:

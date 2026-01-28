@@ -16,14 +16,13 @@ exports.register = asyncHandler(async (req, res, next) => {
   if (userExists) {
     return next(new ApiError("User already exists", 400));
   }
-  const hashedPassword = await bcrypt.hash(password, 12);
   const user = await User.create({
     name,
     email,
-    password: hashedPassword,
+    password,
   });
 
-  const token = createToken(user._id);
+  const token = createAccessToken(user._id);
 
   res.status(201).json({
     status: "Account created successfully",
@@ -51,7 +50,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   if (user.loginAttempts >= 3) {
     if (!captchaToken) {
-     return res.status(httpStatus.BAD_REQUEST).json({
+      return res.status(httpStatus.BAD_REQUEST).json({
         requireCaptcha: true,
         message: "Captcha required after multiple failed attempts",
       });

@@ -22,12 +22,12 @@ const protect = asyncHandler(async (req, res, next) => {
 
   let decoded;
   try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   } catch (err) {
     return next(new ApiError("Invalid token", 401));
   }
 
-  const currentUser = await User.findById(decoded.userId);
+  const currentUser = await User.findById(decoded.id || decoded._id || decoded.userId);
 
   if (!currentUser) {
     return next(
